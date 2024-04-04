@@ -7,8 +7,7 @@ import "./Room.css";
 function Room() {
   const { roomid } = useParams();
   const m = useRef(null);
-  const [stack, setStack] = useState([]);
-  const [mystack, setMyStack] = useState([]);
+  const [messages, setMessages] = useState([]);
   const socket = useSelector((e) => e.socket.socket);
 
   useEffect(() => {
@@ -22,13 +21,19 @@ function Room() {
   function handleSend() {
     const message = m.current.value;
     socket.emit("all", { message });
-    setMyStack((prevStack) => [...prevStack, message]);
-    m.current.value = ""; // Clear input field after sending message
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { message, sentByMe: true },
+    ]);
+    m.current.value = "";
   }
 
   function handleReceiveMessage(data) {
     const { message } = data;
-    setStack((prevStack) => [...prevStack, message]);
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { message, sentByMe: false },
+    ]);
   }
 
   return (
@@ -60,31 +65,21 @@ function Room() {
         </div>
 
         <div
-          className="text-red-500 chat-window"
+          className="mt-16 text-red-500 chat-window"
           style={{ maxHeight: "80vh", overflowY: "auto" }}
         >
-          {stack.map((e, i) => (
+          {messages.map((message, i) => (
             <motion.div
+              key={i}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: i * 0.1 }}
-              key={i}
-              className="px-3 ml-5 overflow-auto text-2xl text-left"
+              className={`px-3 ml-5 overflow-auto text-2xl ${
+                message.sentByMe ? "text-right" : "text-left"
+              }`}
             >
-              <div className="text-left">{e}</div>
+              <div>{message.message}</div>
             </motion.div>
-          ))}
-          {mystack.map((e, i) => (
-            <div key={i} className="">
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: i * 0.1 }}
-                className="px-3 mt-3 ml-5 overflow-auto text-2xl text-right "
-              >
-                <div className="text-right">{e}</div>
-              </motion.div>
-            </div>
           ))}
         </div>
       </div>
