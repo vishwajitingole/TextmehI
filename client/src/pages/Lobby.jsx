@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function Lobby() {
   const email = useRef(null);
   const room = useRef(null);
+  const nav = useNavigate();
 
   const socket = useSelector((state) => state.socket.socket);
 
@@ -14,20 +16,22 @@ function Lobby() {
     const em = email.current.value;
 
     socket.emit("join", { em, r });
+    nav(`/room/${socket.id}`);
   };
 
   useEffect(() => {
     setTimeout(() => {
       socket.on("join", handleJoinRoom);
-      return () => {
-        socket.off("join", handleJoinRoom);
-      };
-    }, [4000]);
+      // return () => {
+      //   socket.off("join", handleJoinRoom);
+      // };
+    }, [1000]);
   }, [socket]);
 
   const handleJoinRoom = useCallback(
     (data) => {
       const { email, room } = data;
+      console.log(data);
     },
     [socket]
   );

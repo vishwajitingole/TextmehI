@@ -17,4 +17,7 @@ io.on("connection", (socket) => {
     socketToEmail.set(socket.id, email);
     io.to(socket.id).emit("join", { email, room });
   });
+  socket.on("all", (data) => {
+    io.emit("sentall", data);
+  });
 });
