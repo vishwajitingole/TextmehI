@@ -1,15 +1,23 @@
 import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { useSelector, useDispatch } from "react-redux";
 
 function Lobby() {
   const email = useRef(null);
   const room = useRef(null);
 
+  const socket = useSelector((state) => state.socket.socket); // Extracting socketId from Redux store
+
+  useEffect(() => {
+    setTimeout(() => {
+      console.log(socket);
+    }, [2000]);
+  }, [socket]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const r = room.current.value;
     const em = email.current.value;
-    // Handle form submission logic here
   };
 
   return (

@@ -1,23 +1,22 @@
-// store.js
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  socketId: null, // Store the socket identifier
+  socket: null, // Initially, no socket object
 };
 
 const socketSlice = createSlice({
   name: "socket",
   initialState,
   reducers: {
-    setSocketId: (state, action) => {
-      state.socketId = action.payload;
+    setSocket: (state, action) => {
+      state.socket = action.payload;
     },
   },
 });
 
-export const { setSocketId } = socketSlice.actions;
+export const { setSocket } = socketSlice.actions;
 
-export const selectSocketId = (state) => state.socket.socketId;
+export const selectSocket = (state) => state.socket;
 
 export default configureStore({
   reducer: {
