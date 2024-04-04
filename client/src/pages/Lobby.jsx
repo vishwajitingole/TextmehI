@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -6,19 +6,31 @@ function Lobby() {
   const email = useRef(null);
   const room = useRef(null);
 
-  const socket = useSelector((state) => state.socket.socket); // Extracting socketId from Redux store
-
-  useEffect(() => {
-    setTimeout(() => {
-      console.log(socket);
-    }, [2000]);
-  }, [socket]);
+  const socket = useSelector((state) => state.socket.socket);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const r = room.current.value;
     const em = email.current.value;
+
+    socket.emit("join", { em, r });
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      socket.on("join", handleJoinRoom);
+      return () => {
+        socket.off("join", handleJoinRoom);
+      };
+    }, [4000]);
+  }, [socket]);
+
+  const handleJoinRoom = useCallback(
+    (data) => {
+      const { email, room } = data;
+    },
+    [socket]
+  );
 
   return (
     <div className="flex items-center justify-center w-full h-screen bg-gray-900">

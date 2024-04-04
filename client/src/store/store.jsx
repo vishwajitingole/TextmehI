@@ -1,7 +1,7 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  socket: null, // Initially, no socket object
+  socket: null,
 };
 
 const socketSlice = createSlice({
