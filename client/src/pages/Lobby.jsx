@@ -18,6 +18,14 @@ function Lobby() {
     socket.emit("join", { em, r });
     nav(`/room/${socket.id}`);
   };
+  const handleVideo = (e) => {
+    e.preventDefault();
+    const r = room.current.value;
+    const em = email.current.value;
+
+    socket.emit("join", { em, r });
+    nav(`/videoroom/${socket.id}`);
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -54,7 +62,7 @@ function Lobby() {
         >
           Welcome to the Lobby
         </motion.h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form className="flex flex-col gap-4">
           <motion.div
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -89,17 +97,28 @@ function Lobby() {
               required
             />
           </motion.div>
-          <div className="mt-6 text-center">
+          <div className="flex justify-center gap-5 mt-6 text-center">
             <motion.button
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.7 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onSubmit={handleSubmit}
+              onClick={handleSubmit}
               className="px-6 py-2 text-white transition-colors duration-300 bg-green-500 rounded-lg hover:bg-green-600"
             >
               Join
+            </motion.button>
+            <motion.button
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.7 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleVideo}
+              className="px-6 py-2 text-white transition-colors duration-300 bg-green-500 rounded-lg hover:bg-green-600"
+            >
+              Join on Video
             </motion.button>
           </div>
         </form>

@@ -18,6 +18,6 @@ io.on("connection", (socket) => {
     io.to(socket.id).emit("join", { email, room });
   });
   socket.on("all", (data) => {
-    io.emit("sentall", data);
+    socket.broadcast.emit("sentall", data);
   });
 });
