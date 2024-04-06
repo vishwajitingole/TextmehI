@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Three from "../3d/Three";
 
 function Lobby() {
   const email = useRef(null);
@@ -45,7 +46,9 @@ function Lobby() {
   );
 
   return (
-    <div className="flex items-center justify-center w-full h-screen bg-gray-900">
+    <div className="flex  items-center justify-center w-full h-screen bg-gray-900">
+      <Three />
+
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
