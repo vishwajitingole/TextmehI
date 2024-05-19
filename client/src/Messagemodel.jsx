@@ -1,10 +1,27 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 
 export default function Model(props) {
+  const groupRef = useRef();
   const { nodes, materials } = useGLTF("/messagemodel.gltf");
+
+  const [time, setTime] = useState(0);
+
+  // Use useFrame to rotate the group
+  // Use useFrame to rotate the group and oscillate up and down
+  useFrame((state, delta) => {
+    if (groupRef.current) {
+      // Increment time
+      setTime(time + delta);
+
+      // Set y position using a sinusoidal function for smooth up and down motion
+      groupRef.current.position.y = Math.sin(time) * 0.3; // Adjust amplitude as needed
+    }
+  });
+
   return (
-    <group {...props} dispose={null}>
+    <group ref={groupRef} {...props} dispose={null}>
       <mesh
         geometry={nodes.Sphere.geometry}
         material={materials["Material.001"]}
