@@ -19,6 +19,8 @@ function Lobby() {
     const r = room.current.value;
     const em = email.current.value;
 
+    localStorage.setItem("email", em);
+
     socket.emit("join", { em, r });
     nav(`/room/${socket.id}`);
   };
@@ -57,7 +59,7 @@ function Lobby() {
       >
         <IoMdHelpCircle />
       </button>
-      <div className="flex  items-center justify-center w-full h-screen bg-gray-900">
+      <div className="flex items-center justify-center w-full h-screen bg-gray-900">
         <Three />
 
         <motion.div

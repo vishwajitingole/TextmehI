@@ -7,6 +7,7 @@ import "./Room.css";
 function Room() {
   const { roomid } = useParams();
   const m = useRef(null);
+  const chatWindowRef = useRef(null); // Reference for the chat window
   const [messages, setMessages] = useState([]);
   const socket = useSelector((e) => e.socket.socket);
 
@@ -18,21 +19,48 @@ function Room() {
     };
   }, [socket]);
 
+  useEffect(() => {
+    // Scroll to the bottom when messages change
+    if (chatWindowRef.current) {
+      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    // Add event listener for Enter key press
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        handleSend();
+      }
+    };
+
+    const inputElement = m.current;
+    inputElement.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup event listener on unmount
+    return () => {
+      inputElement.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   function handleSend() {
     const message = m.current.value;
-    socket.emit("all", { message });
+    const email = localStorage.getItem("email");
+
+    socket.emit("all", { message, email });
     setMessages((prevMessages) => [
       ...prevMessages,
-      { message, sentByMe: true },
+      { message, sentByMe: true, email },
     ]);
     m.current.value = "";
   }
 
   function handleReceiveMessage(data) {
-    const { message } = data;
+    const { message, email } = data;
+    console.log({ message, email });
     setMessages((prevMessages) => [
       ...prevMessages,
-      { message, sentByMe: false },
+      { message, email, sentByMe: false },
     ]);
   }
 
@@ -65,8 +93,9 @@ function Room() {
         </div>
 
         <div
-          className="mt-16 text-red-500 chat-window"
-          style={{ maxHeight: "80vh", overflowY: "auto" }}
+          ref={chatWindowRef} // Reference for the chat window
+          className="mt-16 overflow-scroll text-red-500 chat-window"
+          style={{ maxHeight: "70vh" }}
         >
           {messages.map((message, i) => (
             <motion.div
@@ -78,7 +107,15 @@ function Room() {
                 message.sentByMe ? "text-right" : "text-left"
               }`}
             >
-              <div>{message.message}</div>
+              <div className="text-xs text-white text-pretty tighter">
+                {message.email}
+              </div>
+              <div
+                className="mb-[2vw] font-serif
+ "
+              >
+                {message.message}
+              </div>
             </motion.div>
           ))}
         </div>

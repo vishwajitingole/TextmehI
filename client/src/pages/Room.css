@@ -1,0 +1,18 @@
+/* Hide scrollbar for WebKit browsers (Chrome, Safari) */
+
+::-webkit-scrollbar {
+  width: 0px;
+  /* Width of the vertical scrollbar */
+  height: 0px;
+  /* Height of the horizontal scrollbar */
+}
+
+/* Optionally, hide scrollbar track and thumb */
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
