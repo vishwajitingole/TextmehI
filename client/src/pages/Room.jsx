@@ -11,6 +11,10 @@ function Room() {
   const [messages, setMessages] = useState([]);
   const socket = useSelector((e) => e.socket.socket);
 
+  // Create an Audio object for the notification sound
+  const notificationSound = useRef(new Audio("/iphone.mp3"));
+  const sentSound = useRef(new Audio("/iphoneSent.mp3"));
+
   useEffect(() => {
     socket.on("sentall", handleReceiveMessage);
 
@@ -53,6 +57,18 @@ function Room() {
       { message, sentByMe: true, email },
     ]);
     m.current.value = "";
+    const playPromise = sentSound.current.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          // Autoplay started
+          playNotificationSound();
+        })
+        .catch((error) => {
+          // Autoplay was prevented
+          console.log("Autoplay was prevented:", error);
+        });
+    }
   }
 
   function handleReceiveMessage(data) {
@@ -62,6 +78,24 @@ function Room() {
       ...prevMessages,
       { message, email, sentByMe: false },
     ]);
+
+    // Check if the browser allows autoplay
+    const playPromise = notificationSound.current.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          // Autoplay started
+          playNotificationSound();
+        })
+        .catch((error) => {
+          // Autoplay was prevented
+          console.log("Autoplay was prevented:", error);
+        });
+    }
+  }
+
+  function playNotificationSound() {
+    // Play the notification sound
   }
 
   return (
@@ -70,9 +104,9 @@ function Room() {
         <motion.h1
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          className="text-3xl font-bold"
+          className="text-5xl font-bold"
         >
-          Room Page
+          Chat Room
         </motion.h1>
         <div className="">
           <motion.button
@@ -88,7 +122,7 @@ function Room() {
           <input
             ref={m}
             type="text"
-            className="absolute font-bold tracking-widest  bottom-4 text-black px-3 rounded-xl w-[80vw] sm:w-[94vw]  left-0 h-[6vh]  "
+            className="absolute font-bold tracking-widest bottom-4 text-black px-3 rounded-xl w-[80vw] sm:w-[94vw] left-0 h-[6vh]"
           />
         </div>
 
@@ -107,13 +141,14 @@ function Room() {
                 message.sentByMe ? "text-right" : "text-left"
               }`}
             >
-              <div className="text-xs text-white text-pretty tighter">
+              <div
+                className={`text-sm font-thin text-white ${
+                  message.sentByMe ? "text-white" : " text-yellow-300"
+                }  text-pretty tighter`}
+              >
                 {message.email}
               </div>
-              <div
-                className="mb-[2vw] font-serif
- "
-              >
+              <div className="mb-[2vw] text-3xl sm:text-3xl font-serif">
                 {message.message}
               </div>
             </motion.div>

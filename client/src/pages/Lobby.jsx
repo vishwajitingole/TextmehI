@@ -13,11 +13,57 @@ function Lobby() {
   const nav = useNavigate();
 
   const socket = useSelector((state) => state.socket.socket);
-
+  const error = () =>
+    toast.error("  Email and Room Number can't be blank!!!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+  const emerror = () =>
+    toast.error("  Email can't be blank!!!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+  const rerror = () =>
+    toast.error(" Room Number can't be blank!!!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const r = room.current.value;
     const em = email.current.value;
+
+    if (!em && !r) {
+      error();
+      return;
+    }
+    if (!em) {
+      emerror();
+      return;
+    }
+    if (!r) {
+      rerror();
+      return;
+    }
 
     localStorage.setItem("email", em);
 

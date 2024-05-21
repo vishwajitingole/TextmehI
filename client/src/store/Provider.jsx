@@ -7,7 +7,7 @@ const SocketProvider = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const socket = io("http://localhost:3000");
+    const socket = io("https://video-call-1-3anu.onrender.com");
 
     socket.on("connect", () => {
       console.log("Socket connected!");
