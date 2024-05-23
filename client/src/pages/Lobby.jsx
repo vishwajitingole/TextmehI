@@ -83,9 +83,9 @@ function Lobby() {
   useEffect(() => {
     setTimeout(() => {
       socket.on("join", handleJoinRoom);
-      // return () => {
-      //   socket.off("join", handleJoinRoom);
-      // };
+      return () => {
+        socket.off("join", handleJoinRoom);
+      };
     }, [1000]);
   }, [socket]);
 

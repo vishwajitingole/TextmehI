@@ -183,7 +183,7 @@ function Room() {
               <div className="font-serif text-4xl sm:text-3xl">
                 {message.message}
               </div>
-              <div className="text-[1vw] font-thin text-white ">
+              <div className="sm:text-[1vw] text-opacity-80 text-semibold text-xs font-thin text-white ">
                 {message.timeString}
               </div>
             </motion.div>
