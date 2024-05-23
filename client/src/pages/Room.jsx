@@ -47,14 +47,45 @@ function Room() {
     };
   }, []);
 
+  function handleTime() {
+    var now = new Date();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
+    var ap = "AM";
+    if (hour > 11) {
+      ap = "PM";
+    }
+    if (hour > 12) {
+      hour = hour - 12;
+    }
+    if (hour == 0) {
+      hour = 12;
+    }
+    if (hour < 10) {
+      hour = "0" + hour;
+    }
+    if (minute < 10) {
+      minute = "0" + minute;
+    }
+    if (second < 10) {
+      second = "0" + second;
+    }
+    var timeString = hour + ":" + minute + " " + ap;
+
+    return timeString;
+  }
+
   function handleSend() {
     const message = m.current.value;
     const email = localStorage.getItem("email");
 
+    var timeString = handleTime();
+
     socket.emit("all", { message, email });
     setMessages((prevMessages) => [
       ...prevMessages,
-      { message, sentByMe: true, email },
+      { message, sentByMe: true, email, timeString },
     ]);
     m.current.value = "";
     const playPromise = sentSound.current.play();
@@ -74,9 +105,10 @@ function Room() {
   function handleReceiveMessage(data) {
     const { message, email } = data;
     console.log({ message, email });
+    var timeString = handleTime();
     setMessages((prevMessages) => [
       ...prevMessages,
-      { message, email, sentByMe: false },
+      { message, email, sentByMe: false, timeString },
     ]);
 
     // Check if the browser allows autoplay
@@ -129,7 +161,7 @@ function Room() {
         <div
           ref={chatWindowRef} // Reference for the chat window
           className="mt-16 overflow-scroll text-red-500 chat-window"
-          style={{ maxHeight: "70vh" }}
+          style={{ maxHeight: "66vh" }}
         >
           {messages.map((message, i) => (
             <motion.div
@@ -142,14 +174,17 @@ function Room() {
               }`}
             >
               <div
-                className={`text-sm font-thin text-white ${
+                className={`text-sm  text-white ${
                   message.sentByMe ? "text-white" : " text-yellow-300"
                 }  text-pretty tighter`}
               >
                 {message.email}
               </div>
-              <div className="mb-[2vw] text-3xl sm:text-3xl font-serif">
+              <div className="font-serif text-4xl sm:text-3xl">
                 {message.message}
+              </div>
+              <div className="text-[1vw] font-thin text-white ">
+                {message.timeString}
               </div>
             </motion.div>
           ))}
