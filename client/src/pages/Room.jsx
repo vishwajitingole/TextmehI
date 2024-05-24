@@ -136,6 +136,7 @@ function Room() {
         <motion.h1
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
+          transition={{ duration: 0.3 }}
           className="text-5xl font-bold"
         >
           Chat Room
